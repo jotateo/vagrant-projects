@@ -1,0 +1,28 @@
+
+# Required for the Disks feature
+Vagrant.require_version ">= 2.3.2"
+
+# Box metadata location and box name
+BOX_NAME = "ubuntu/xenial64"
+
+# define hostname
+NAME = "lxdeb-vag"
+
+Vagrant.configure("2") do |config|
+  config.vm.box_check_update = false
+  config.vm.box = BOX_NAME
+  config.vm.define NAME
+
+  # change memory size
+  config.vm.provider "virtualbox" do |vb, override|
+    vb.customize [ "guestproperty", "set", :id, "/VirtualBox/GuestAdd/VBoxService/--timesync-set-threshold", 1000 ]
+    vb.memory = 2048
+    vb.name = NAME
+    vb.cpus = 2
+    override.vm.disk :disk, size: '16GB', name: 'lxub_storage'
+  end
+
+  # VM hostname
+  config.vm.hostname = NAME + ".jota.teo"
+
+end
